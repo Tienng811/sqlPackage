@@ -1,0 +1,589 @@
+SQL> DROP TABLE Client CASCADE CONSTRAINTS ;
+
+Table CLIENT dropped.
+
+SQL> DROP TABLE Course CASCADE CONSTRAINTS ;
+
+Table COURSE dropped.
+
+SQL> DROP TABLE Employee CASCADE CONSTRAINTS ;
+
+Table EMPLOYEE dropped.
+
+SQL> DROP TABLE Job CASCADE CONSTRAINTS ;
+
+Table JOB dropped.
+
+SQL> DROP TABLE Leave CASCADE CONSTRAINTS ;
+
+Table LEAVE dropped.
+
+SQL> DROP TABLE Manager CASCADE CONSTRAINTS ;
+
+Table MANAGER dropped.
+
+SQL> DROP TABLE Personal_leave CASCADE CONSTRAINTS ;
+
+Table PERSONAL_LEAVE dropped.
+
+SQL> DROP TABLE Review CASCADE CONSTRAINTS ;
+
+Table REVIEW dropped.
+
+SQL> DROP TABLE Sal_history CASCADE CONSTRAINTS ;
+
+Table SAL_HISTORY dropped.
+
+SQL> DROP TABLE Speciality_code CASCADE CONSTRAINTS ;
+
+Table SPECIALITY_CODE dropped.
+
+SQL> DROP TABLE Support CASCADE CONSTRAINTS ;
+
+Table SUPPORT dropped.
+
+SQL> DROP TABLE Training_leave CASCADE CONSTRAINTS ;
+
+Table TRAINING_LEAVE dropped.
+
+SQL> DROP TABLE Vacation_leave CASCADE CONSTRAINTS ;
+
+Table VACATION_LEAVE dropped.
+
+SQL> DROP TABLE WORK CASCADE CONSTRAINTS ;
+
+Table WORK dropped.
+
+SQL> CREATE TABLE Client
+  (
+    client_no         NUMBER (7) NOT NULL ,
+    client_gname      VARCHAR2 (255) NOT NULL ,
+    client_fname      VARCHAR2 (255) NOT NULL ,
+    client_contact_no NUMBER (10) NOT NULL ,
+    client_postcode   NUMBER (4) NOT NULL ,
+    client_state      VARCHAR2 (3 CHAR) NOT NULL ,
+    client_city       VARCHAR2 (20 CHAR) NOT NULL ,
+    client_address    VARCHAR2 (255 CHAR) NOT NULL
+  ) ;
+
+Table CLIENT created.
+
+SQL> ALTER TABLE Client ADD CONSTRAINT Client_PK PRIMARY KEY ( client_no ) ;
+
+Table CLIENT altered.
+
+SQL> CREATE TABLE Course
+  (
+    Course_no   NUMBER (7) NOT NULL ,
+    Course_name VARCHAR2 (255) NOT NULL ,
+    Course_cost NUMBER (8,2) NOT NULL
+  ) ;
+
+Table COURSE created.
+
+SQL> ALTER TABLE Course ADD CONSTRAINT Course_PK PRIMARY KEY ( Course_no ) ;
+
+Table COURSE altered.
+
+SQL> CREATE TABLE Employee
+  (
+    emp_no         NUMBER (7) NOT NULL ,
+    emp_gname      VARCHAR2 (24) NOT NULL ,
+    emp_fname      VARCHAR2 (24) NOT NULL ,
+    emp_dob        DATE NOT NULL ,
+    emp_salary     NUMBER (9,2) NOT NULL ,
+    emp_leave_bal  NUMBER (10,2) NOT NULL ,
+    emp_is_M       CHAR (1) NOT NULL ,
+    emp_is_S       CHAR (1) NOT NULL ,
+    Manager_emp_no NUMBER (7) NOT NULL
+  ) ;
+
+Table EMPLOYEE created.
+
+SQL> ALTER TABLE Employee ADD CONSTRAINT Emp_is_M_chk CHECK ( emp_is_M IN ('N', 'Y')) ;
+
+Table EMPLOYEE altered.
+
+SQL> ALTER TABLE Employee ADD CONSTRAINT Emp_is_S CHECK ( emp_is_S     IN ('N', 'Y')) ;
+
+Table EMPLOYEE altered.
+
+SQL> COMMENT ON COLUMN Employee.emp_salary
+IS
+  'Salary. Precision 12, Scale 2 => Range from: 0 -> 9999999.99' ;
+
+Comment on column employee.emp_salary 'SALARY. PRECISION 12, SCALE 2 => RANGE FROM: 0 -> 9999999.99' succeeded.
+
+SQL> COMMENT ON COLUMN Employee.emp_is_M
+IS
+  'Overlap. Check if Employee is Manager (M), or Support (S). 1 is M, 0 is S.' ;
+
+Comment on column employee.emp_is_m 'OVERLAP. CHECK IF EMPLOYEE IS MANAGER M), OR SUPPORT S). 1 IS M, 0 IS S.' succeeded.
+
+SQL> COMMENT ON COLUMN Employee.emp_is_S
+IS
+  'Overlap. Check if Employee is Manager (M), or Support (S). 1 is M, 0 is S.' ;
+
+Comment on column employee.emp_is_s 'OVERLAP. CHECK IF EMPLOYEE IS MANAGER M), OR SUPPORT S). 1 IS M, 0 IS S.' succeeded.
+
+SQL> ALTER TABLE Employee ADD CONSTRAINT Employee_PK PRIMARY KEY ( emp_no ) ;
+
+Table EMPLOYEE altered.
+
+SQL> CREATE TABLE Job
+  (
+    job_no                    NUMBER (4) NOT NULL ,
+    job_name                  VARCHAR2 (24) NOT NULL ,
+    job_desc                  VARCHAR2 (255 CHAR) ,
+    Speciality_code_spec_code CHAR (3) NOT NULL ,
+    Client_client_no          NUMBER (7) NOT NULL
+  ) ;
+
+Table JOB created.
+
+SQL> ALTER TABLE Job ADD CONSTRAINT Job_PK PRIMARY KEY ( job_no ) ;
+
+Table JOB altered.
+
+SQL> CREATE TABLE Leave
+  (
+    leave_no        NUMBER (7) NOT NULL ,
+    Start_date      DATE NOT NULL ,
+    End_date        DATE NOT NULL ,
+    leave_paid      CHAR (1) NOT NULL ,
+    Leave_type      CHAR (1) NOT NULL ,
+    Employee_emp_no NUMBER (7) NOT NULL
+  ) ;
+
+Table LEAVE created.
+
+SQL> ALTER TABLE Leave ADD CHECK ( leave_paid                       IN ('N', 'Y')) ;
+
+Table LEAVE altered.
+
+SQL> ALTER TABLE Leave ADD CONSTRAINT Leave_type CHECK ( Leave_type IN ('P', 'T', 'V')) ;
+
+Table LEAVE altered.
+
+SQL> COMMENT ON COLUMN Leave.Leave_type
+IS
+  'T, P or V' ;
+
+Comment on column leave.leave_type 'T, P OR V' succeeded.
+
+SQL> ALTER TABLE Leave ADD CONSTRAINT Leave_PK PRIMARY KEY ( leave_no ) ;
+
+Table LEAVE altered.
+
+SQL> CREATE TABLE Manager
+  (
+    emp_no         NUMBER (7) NOT NULL ,
+    num_emp_sup    NUMBER (3) NOT NULL ,
+    date_appointed DATE NOT NULL
+  ) ;
+
+Table MANAGER created.
+
+SQL> COMMENT ON COLUMN Manager.num_emp_sup
+IS
+  'Number of employees' ;
+
+Comment on column manager.num_emp_sup 'NUMBER OF EMPLOYEES' succeeded.
+
+SQL> ALTER TABLE Manager ADD CONSTRAINT Manager_PK PRIMARY KEY ( emp_no ) ;
+
+Table MANAGER altered.
+
+SQL> CREATE TABLE Personal_leave
+  (
+    leave_no          NUMBER (7) NOT NULL ,
+    leave_sick        CHAR (1) NOT NULL ,
+    leave_contactable CHAR (1) NOT NULL
+  ) ;
+
+Table PERSONAL_LEAVE created.
+
+SQL> ALTER TABLE Personal_leave ADD CHECK ( leave_sick        IN ('N', 'Y')) ;
+
+Table PERSONAL_LEAVE altered.
+
+SQL> ALTER TABLE Personal_leave ADD CHECK ( leave_contactable IN ('N', 'Y')) ;
+
+Table PERSONAL_LEAVE altered.
+
+SQL> COMMENT ON COLUMN Personal_leave.leave_contactable
+IS
+  'Y or N' ;
+
+Comment on column personal_leave.leave_contactable 'Y OR N' succeeded.
+
+SQL> ALTER TABLE Personal_leave ADD CONSTRAINT Personal_leave_PK PRIMARY KEY ( leave_no ) ;
+
+Table PERSONAL_LEAVE altered.
+
+SQL> CREATE TABLE Review
+  (
+    rev_no          NUMBER (6) NOT NULL ,
+    rev_date        DATE NOT NULL ,
+    rev_rating      CHAR (1) NOT NULL ,
+    Manager_emp_no1 NUMBER (7) NOT NULL ,
+    Manager_emp_no  NUMBER (7) NOT NULL
+  ) ;
+
+Table REVIEW created.
+
+SQL> ALTER TABLE Review ADD CONSTRAINT chk_rev_rating CHECK ( rev_rating IN ('N', 'P', 'S')) ;
+
+Table REVIEW altered.
+
+SQL> ALTER TABLE Review ADD CONSTRAINT Review_PK PRIMARY KEY ( rev_no ) ;
+
+Table REVIEW altered.
+
+SQL> CREATE TABLE Sal_history
+  (
+    sal_no          NUMBER (7) NOT NULL ,
+    sal_date        DATE NOT NULL ,
+    sal_amount      NUMBER (10,2) NOT NULL ,
+    Employee_emp_no NUMBER (7) NOT NULL
+  ) ;
+
+Table SAL_HISTORY created.
+
+SQL> ALTER TABLE Sal_history ADD CONSTRAINT Sal_history_PK PRIMARY KEY ( sal_no ) ;
+
+Table SAL_HISTORY altered.
+
+SQL> CREATE TABLE Speciality_code
+  (
+    spec_code CHAR (3) NOT NULL ,
+    spec_name VARCHAR2 (20) NOT NULL
+  ) ;
+
+Table SPECIALITY_CODE created.
+
+SQL> ALTER TABLE Speciality_code ADD CONSTRAINT Speciality_code_PK PRIMARY KEY ( spec_code ) ;
+
+Table SPECIALITY_CODE altered.
+
+SQL> CREATE TABLE Support
+  (
+    emp_no                    NUMBER (7) NOT NULL ,
+    hour_rate                 NUMBER (3,1) NOT NULL ,
+    avg_rating                NUMBER (3,1) NOT NULL ,
+    Speciality_code_spec_code CHAR (3) NOT NULL ,
+    support_hours             NUMBER (4,2) NOT NULL
+  ) ;
+
+Table SUPPORT created.
+
+SQL> ALTER TABLE Support ADD CONSTRAINT Support_PK PRIMARY KEY ( emp_no ) ;
+
+Table SUPPORT altered.
+
+SQL> CREATE TABLE Training_leave
+  (
+    leave_no         NUMBER (7) NOT NULL ,
+    course_comp      CHAR (1) NOT NULL ,
+    Course_Course_no NUMBER (7) NOT NULL
+  ) ;
+
+Table TRAINING_LEAVE created.
+
+SQL> ALTER TABLE Training_leave ADD CHECK ( course_comp IN ('N', 'Y')) ;
+
+Table TRAINING_LEAVE altered.
+
+SQL> COMMENT ON COLUMN Training_leave.course_comp
+IS
+  'Y or N' ;
+
+Comment on column training_leave.course_comp 'Y OR N' succeeded.
+
+SQL> ALTER TABLE Training_leave ADD CONSTRAINT Training_leave_PK PRIMARY KEY ( leave_no ) ;
+
+Table TRAINING_LEAVE altered.
+
+SQL> CREATE TABLE Vacation_leave
+  (
+    leave_no   NUMBER (7) NOT NULL ,
+    In_country CHAR (1) ,
+    leave_cost NUMBER (8,1)
+  ) ;
+
+Table VACATION_LEAVE created.
+
+SQL> ALTER TABLE Vacation_leave ADD CHECK ( In_country IN ('N', 'Y')) ;
+
+Table VACATION_LEAVE altered.
+
+SQL> ALTER TABLE Vacation_leave ADD CONSTRAINT Vacation_leave_PK PRIMARY KEY ( leave_no ) ;
+
+Table VACATION_LEAVE altered.
+
+SQL> CREATE TABLE WORK
+  (
+    work_rating    NUMBER (3,1) NOT NULL ,
+    Support_emp_no NUMBER (7) NOT NULL ,
+    Job_job_no     NUMBER (4) NOT NULL ,
+    work_hour      NUMBER (4,2) NOT NULL
+  ) ;
+
+Table WORK created.
+
+SQL> ALTER TABLE WORK ADD CHECK ( work_rating BETWEEN 1.0 AND 10.0) ;
+
+Table WORK altered.
+
+SQL> ALTER TABLE WORK ADD CONSTRAINT Work_PK PRIMARY KEY ( Job_job_no, Support_emp_no ) ;
+
+Table WORK altered.
+
+SQL> ALTER TABLE Employee ADD CONSTRAINT Employee_Manager_FK FOREIGN KEY ( Manager_emp_no ) REFERENCES Manager ( emp_no ) ;
+
+Table EMPLOYEE altered.
+
+SQL> ALTER TABLE Job ADD CONSTRAINT Job_Client_FK FOREIGN KEY ( Client_client_no ) REFERENCES Client ( client_no ) ON
+DELETE CASCADE ;
+
+Table JOB altered.
+
+SQL> ALTER TABLE Job ADD CONSTRAINT Job_Speciality_code_FK FOREIGN KEY ( Speciality_code_spec_code ) REFERENCES Speciality_code ( spec_code ) ;
+
+Table JOB altered.
+
+SQL> ALTER TABLE Leave ADD CONSTRAINT Leave_Employee_FK FOREIGN KEY ( Employee_emp_no ) REFERENCES Employee ( emp_no ) ON
+DELETE CASCADE ;
+
+Table LEAVE altered.
+
+SQL> ALTER TABLE Manager ADD CONSTRAINT Manager_Employee_FK FOREIGN KEY ( emp_no ) REFERENCES Employee ( emp_no ) ;
+
+Table MANAGER altered.
+
+SQL> ALTER TABLE Personal_leave ADD CONSTRAINT Personal_leave_Leave_FK FOREIGN KEY ( leave_no ) REFERENCES Leave ( leave_no ) ;
+
+Table PERSONAL_LEAVE altered.
+
+SQL> ALTER TABLE Review ADD CONSTRAINT Review_Manager_FK FOREIGN KEY ( Manager_emp_no ) REFERENCES Manager ( emp_no ) ON
+DELETE CASCADE ;
+
+Table REVIEW altered.
+
+SQL> ALTER TABLE Review ADD CONSTRAINT Review_Manager_FKv1 FOREIGN KEY ( Manager_emp_no1 ) REFERENCES Manager ( emp_no ) ON
+DELETE CASCADE ;
+
+Table REVIEW altered.
+
+SQL> ALTER TABLE Sal_history ADD CONSTRAINT Sal_history_Employee_FK FOREIGN KEY ( Employee_emp_no ) REFERENCES Employee ( emp_no ) ON
+DELETE CASCADE ;
+
+Table SAL_HISTORY altered.
+
+SQL> ALTER TABLE Support ADD CONSTRAINT Support_Employee_FK FOREIGN KEY ( emp_no ) REFERENCES Employee ( emp_no ) ;
+
+Table SUPPORT altered.
+
+SQL> ALTER TABLE Support ADD CONSTRAINT Support_Speciality_code_FK FOREIGN KEY ( Speciality_code_spec_code ) REFERENCES Speciality_code ( spec_code ) ;
+
+Table SUPPORT altered.
+
+SQL> ALTER TABLE Training_leave ADD CONSTRAINT Training_leave_Course_FK FOREIGN KEY ( Course_Course_no ) REFERENCES Course ( Course_no ) ;
+
+Table TRAINING_LEAVE altered.
+
+SQL> ALTER TABLE Training_leave ADD CONSTRAINT Training_leave_Leave_FK FOREIGN KEY ( leave_no ) REFERENCES Leave ( leave_no ) ;
+
+Table TRAINING_LEAVE altered.
+
+SQL> ALTER TABLE Vacation_leave ADD CONSTRAINT Vacation_leave_Leave_FK FOREIGN KEY ( leave_no ) REFERENCES Leave ( leave_no ) ;
+
+Table VACATION_LEAVE altered.
+
+SQL> ALTER TABLE WORK ADD CONSTRAINT Work_Job_FK FOREIGN KEY ( Job_job_no ) REFERENCES Job ( job_no ) ;
+
+Table WORK altered.
+
+SQL> ALTER TABLE WORK ADD CONSTRAINT Work_Support_FK FOREIGN KEY ( Support_emp_no ) REFERENCES Support ( emp_no ) ON
+DELETE CASCADE ;
+
+Table WORK altered.
+
+SQL> Drop Sequence Client_client_no_SEQ;
+
+Sequence CLIENT_CLIENT_NO_SEQ dropped.
+
+SQL> Drop Sequence Course_Course_no_SEQ;
+
+Sequence COURSE_COURSE_NO_SEQ dropped.
+
+SQL> Drop Sequence Employee_emp_no_SEQ;
+
+Sequence EMPLOYEE_EMP_NO_SEQ dropped.
+
+SQL> Drop Sequence Job_job_no_SEQ;
+
+Sequence JOB_JOB_NO_SEQ dropped.
+
+SQL> Drop Sequence Leave_leave_no_SEQ;
+
+Sequence LEAVE_LEAVE_NO_SEQ dropped.
+
+SQL> Drop Sequence Review_rev_no_SEQ;
+
+Sequence REVIEW_REV_NO_SEQ dropped.
+
+SQL> Drop Sequence Sal_history_sal_no_SEQ;
+
+Sequence SAL_HISTORY_SAL_NO_SEQ dropped.
+
+SQL> Drop Sequence Speciality_code_spec_code_SEQ;
+
+Sequence SPECIALITY_CODE_SPEC_CODE_SEQ dropped.
+
+SQL> CREATE SEQUENCE Client_client_no_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence CLIENT_CLIENT_NO_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Client_client_no_TRG BEFORE
+  INSERT ON Client FOR EACH ROW WHEN (NEW.client_no IS NULL) BEGIN :NEW.client_no := Client_client_no_SEQ.NEXTVAL;
+END;
+/
+
+Trigger CLIENT_CLIENT_NO_TRG compiled
+
+SQL> CREATE SEQUENCE Course_Course_no_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence COURSE_COURSE_NO_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Course_Course_no_TRG BEFORE
+  INSERT ON Course FOR EACH ROW WHEN (NEW.Course_no IS NULL) BEGIN :NEW.Course_no := Course_Course_no_SEQ.NEXTVAL;
+END;
+/
+
+Trigger COURSE_COURSE_NO_TRG compiled
+
+SQL> CREATE SEQUENCE Employee_emp_no_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence EMPLOYEE_EMP_NO_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Employee_emp_no_TRG BEFORE
+  INSERT ON Employee FOR EACH ROW WHEN (NEW.emp_no IS NULL) BEGIN :NEW.emp_no := Employee_emp_no_SEQ.NEXTVAL;
+END;
+/
+
+Trigger EMPLOYEE_EMP_NO_TRG compiled
+
+SQL> CREATE SEQUENCE Job_job_no_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence JOB_JOB_NO_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Job_job_no_TRG BEFORE
+  INSERT ON Job FOR EACH ROW WHEN (NEW.job_no IS NULL) BEGIN :NEW.job_no := Job_job_no_SEQ.NEXTVAL;
+END;
+/
+
+Trigger JOB_JOB_NO_TRG compiled
+
+SQL> CREATE SEQUENCE Leave_leave_no_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence LEAVE_LEAVE_NO_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Leave_leave_no_TRG BEFORE
+  INSERT ON Leave FOR EACH ROW WHEN (NEW.leave_no IS NULL) BEGIN :NEW.leave_no := Leave_leave_no_SEQ.NEXTVAL;
+END;
+/
+
+Trigger LEAVE_LEAVE_NO_TRG compiled
+
+SQL> CREATE SEQUENCE Review_rev_no_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence REVIEW_REV_NO_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Review_rev_no_TRG BEFORE
+  INSERT ON Review FOR EACH ROW WHEN (NEW.rev_no IS NULL) BEGIN :NEW.rev_no := Review_rev_no_SEQ.NEXTVAL;
+END;
+/
+
+Trigger REVIEW_REV_NO_TRG compiled
+
+SQL> CREATE SEQUENCE Sal_history_sal_no_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence SAL_HISTORY_SAL_NO_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Sal_history_sal_no_TRG BEFORE
+  INSERT ON Sal_history FOR EACH ROW WHEN (NEW.sal_no IS NULL) BEGIN :NEW.sal_no := Sal_history_sal_no_SEQ.NEXTVAL;
+END;
+/
+
+Trigger SAL_HISTORY_SAL_NO_TRG compiled
+
+SQL> CREATE SEQUENCE Speciality_code_spec_code_SEQ START WITH 1 NOCACHE ORDER ;
+
+Sequence SPECIALITY_CODE_SPEC_CODE_SEQ created.
+
+SQL> CREATE OR REPLACE TRIGGER Speciality_code_spec_code_TRG BEFORE
+  INSERT ON Speciality_code FOR EACH ROW WHEN (NEW.spec_code IS NULL) BEGIN :NEW.spec_code := Speciality_code_spec_code_SEQ.NEXTVAL;
+END;
+/
+
+Trigger SPECIALITY_CODE_SPEC_CODE_TRG compiled
+
+SQL> CREATE OR REPLACE TRIGGER ARC_FKArc_3_Personal_leave BEFORE
+  INSERT OR
+  UPDATE OF leave_no ON Personal_leave FOR EACH ROW DECLARE d CHAR (1);
+  BEGIN
+    SELECT A.Leave_type INTO d FROM Leave A WHERE A.leave_no = :new.leave_no;
+    IF (d IS NULL OR d <> 'P') THEN
+      raise_application_error(-20223,'FK Personal_leave_Leave_FK in Table Personal_leave violates Arc constraint on Table Leave - discriminator column Leave_type doesn''t have value ''P''');
+    END IF;
+  EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    NULL;
+  WHEN OTHERS THEN
+    RAISE;
+  END;
+  
+/
+
+Trigger ARC_FKARC_3_PERSONAL_LEAVE compiled
+
+SQL> CREATE OR REPLACE TRIGGER ARC_FKArc_3_Training_leave BEFORE
+  INSERT OR
+  UPDATE OF leave_no ON Training_leave FOR EACH ROW DECLARE d CHAR (1);
+  BEGIN
+    SELECT A.Leave_type INTO d FROM Leave A WHERE A.leave_no = :new.leave_no;
+    IF (d IS NULL OR d <> 'T') THEN
+      raise_application_error(-20223,'FK Training_leave_Leave_FK in Table Training_leave violates Arc constraint on Table Leave - discriminator column Leave_type doesn''t have value ''T''');
+    END IF;
+  EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    NULL;
+  WHEN OTHERS THEN
+    RAISE;
+  END;
+  
+/
+
+Trigger ARC_FKARC_3_TRAINING_LEAVE compiled
+
+SQL> CREATE OR REPLACE TRIGGER ARC_FKArc_3_Vacation_leave BEFORE
+  INSERT OR
+  UPDATE OF leave_no ON Vacation_leave FOR EACH ROW DECLARE d CHAR (1);
+  BEGIN
+    SELECT A.Leave_type INTO d FROM Leave A WHERE A.leave_no = :new.leave_no;
+    IF (d IS NULL OR d <> 'V') THEN
+      raise_application_error(-20223,'FK Vacation_leave_Leave_FK in Table Vacation_leave violates Arc constraint on Table Leave - discriminator column Leave_type doesn''t have value ''V''');
+    END IF;
+  EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    NULL;
+  WHEN OTHERS THEN
+    RAISE;
+  END;
+  
+/
+
+Trigger ARC_FKARC_3_VACATION_LEAVE compiled
+
+SQL> spool off
